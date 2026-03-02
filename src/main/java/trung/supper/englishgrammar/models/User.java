@@ -29,7 +29,7 @@ public class User {
     private String email;
 
     @Column(name = "password_hash", length = 255)
-    private String passwordHash; // Sẽ null nếu đăng nhập qua Google/Facebook (OAuth2)
+    private String passwordHash; // Có thể null nếu đăng nhập qua OAuth2 (Google/Facebook)
 
     @Column(name = "full_name", length = 100)
     private String fullName;
@@ -58,4 +58,7 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserStreak streak;
 }

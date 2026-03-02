@@ -1,5 +1,6 @@
 package trung.supper.englishgrammar.models;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -18,30 +19,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "question_options")
+@Table(name = "user_badges")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionOption {
+public class UserBadge {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "badge_id", nullable = false)
+    private Badge badge;
 
-    @Column(name = "is_correct")
-    private Boolean isCorrect = false;
-
-    @Column(name = "match_pair_id")
-    private UUID matchPairId; // Dùng cho loại câu hỏi MATCHING (nối cặp)
-
-    @Column(name = "order_index")
-    private Integer orderIndex;
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(name = "earned_at", updatable = false)
+    private LocalDateTime earnedAt;
 }

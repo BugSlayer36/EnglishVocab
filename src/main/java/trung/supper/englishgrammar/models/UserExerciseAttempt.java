@@ -9,8 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,51 +16,49 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import trung.supper.englishgrammar.models.enums.QuestionType;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "user_exercise_attempts")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Question {
+public class UserExerciseAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "question_type", nullable = false)
-    private QuestionType questionType;
+    @Column(nullable = false)
+    private Double score; // Điểm đạt được
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content; // Nội dung câu hỏi
+    @Column(name = "max_score", nullable = false)
+    private Double maxScore; // Tổng điểm tối đa của bài tập đó
 
-    @Column(columnDefinition = "TEXT")
-    private String explanation; // Giải thích tại sao đúng/sai (hiện sau khi nộp bài)
+    @Column(name = "is_passed", nullable = false)
+    private Boolean isPassed; // Kết quả: score/maxScore >= exercise.passScore
 
-    @Column(name = "score_weight")
-    private Integer scoreWeight = 1; // Trọng số điểm (mặc định 1)
-
-    @Column(name = "order_index")
-    private Integer orderIndex;
+    @Column(name = "time_spent_seconds")
+    private Integer timeSpentSeconds; // Thời gian làm bài thực tế
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(name = "attempted_at", updatable = false)
+    private LocalDateTime attemptedAt;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    @OrderBy("orderIndex ASC")
-    private List<QuestionOption> options;
+    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL)
+    private List<UserAnswerLog> answerLogs;
 }

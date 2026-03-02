@@ -18,30 +18,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "question_options")
+@Table(name = "user_answer_logs")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionOption {
+public class UserAnswerLog {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attempt_id", nullable = false)
+    private UserExerciseAttempt attempt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "selected_option_id")
+    private QuestionOption selectedOption; // Dùng cho MULTIPLE_CHOICE
 
-    @Column(name = "is_correct")
-    private Boolean isCorrect = false;
+    @Column(name = "text_answer", columnDefinition = "TEXT")
+    private String textAnswer; // Dùng cho FILL_BLANK hoặc FREE_WRITE
 
-    @Column(name = "match_pair_id")
-    private UUID matchPairId; // Dùng cho loại câu hỏi MATCHING (nối cặp)
-
-    @Column(name = "order_index")
-    private Integer orderIndex;
+    @Column(name = "is_correct", nullable = false)
+    private Boolean isCorrect;
 }
