@@ -1,0 +1,22 @@
+# docker-compose.yml
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: english-learning-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
