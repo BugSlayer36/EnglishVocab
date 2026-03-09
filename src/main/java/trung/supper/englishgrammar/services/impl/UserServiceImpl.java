@@ -67,4 +67,11 @@ public class UserServiceImpl implements IUserService {
         return userMapper.toUserResponseDTO(savedUser);
     }
 
+    @Override
+    public UserResponse searchUserByEmail(String email) {
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+        return userMapper.toUserResponseDTO(user);
+    }
+
 }
